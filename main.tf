@@ -66,6 +66,8 @@ resource "aws_security_group" "this" {
 }
 
 resource "aws_instance" "this" {
+  count = 2
+  
   ami                         = data.aws_ami.ubuntu.id
   instance_type               = "t3.small"
   vpc_security_group_ids      = [aws_security_group.this.id]
@@ -134,7 +136,9 @@ resource "aws_lb_target_group" "this" {
 }
 
 resource "aws_lb_target_group_attachment" "this" {
+  count = 2
+
   target_group_arn = aws_lb_target_group.this.arn
-  target_id        = aws_instance.this.id
+  target_id        = aws_instance.this[count.index].id
   port             = 80
 }
